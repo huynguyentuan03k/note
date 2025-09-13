@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8001:8000"
+    depends_on:
+      - mysql
+    command: sh -c "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"
+
+  mysql:
+    image: mysql:8.2
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: my-app
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: 12345
+    ports:
+      - "8080:80"
+
+volumes:
+  dbdata:
