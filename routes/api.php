@@ -1,7 +1,9 @@
 <?php
+// File: routes/api.php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\UserController;
 
-Route::get('/hello', function () {
-    return response()->json(['message' => 'Hello API']);
+Route::prefix('v1')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
 });
